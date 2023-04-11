@@ -465,3 +465,18 @@ def type_annotation_subtyping(
             TYPE_ANNOTATION_SUBTYPING_QUERIES_DICT[(first_type_annotation, second_type_annotation)] = (False, type_variable_subtyping_digraph)
         
         return result, type_variable_subtyping_digraph
+
+
+def find_lowest_subtype_of_type_annotations(type_annotation_list):
+    if len(type_annotation_list) == 0:
+        subtype = None
+    elif len(type_annotation_list) == 1:
+        subtype = type_annotation_list[0]
+    else:
+        subtype = type_annotation_list[0]
+        for type_annotation in type_annotation_list[1:]:
+            if type_annotation_subtyping(type_annotation, subtype)[0]:
+                subtype = type_annotation
+    
+    return subtype
+
