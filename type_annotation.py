@@ -34,6 +34,10 @@ class Subscription:
 Union = tuple
 
 
+def is_type_annotation(o):
+    return isinstance(o, (TypeVariable, ConcreteClass, GlobalFunction, Subscription, Union))
+
+
 def type_annotation_from_instance(instance):
     return ConcreteClass(type(instance).__module__, type(instance).__name__)
 

@@ -3,67 +3,64 @@ not subtype -> False, empty nx.DiGraph
 conditional subtype -> True, non-empty nx.DiGraph
 unconditional subtype -> True, empty nx.DiGraph
 
-from type_annotation import *
-from subtyping import *
-t1 = TypeVariable()
-t2 = TypeVariable()
+```python
+In [1]: from type_annotation import *
 
-------
+In [2]: from subtyping import *
 
-retval = type_annotation_subtyping(Subscription(ConcreteClass('builtins', 'dict'), (t1, t2)), Subscription(ConcreteClass('builtins', 'dict'), (ConcreteClass('builtins', 'int'),ConcreteClass('builtins', 'str'))))
+In [3]: t1 = TypeVariable()
 
-In [40]: retval[0]
-Out[40]: True
+In [4]: t2 = TypeVariable()
 
-In [41]: list(retval[1].successors(t1))
-Out[41]: 
+In [5]: retval = type_annotation_subtyping(Subscription(ConcreteClass('builtins', 'dict'), (t1, t2)), Subscription(ConcreteClass('builtins', 'dict'), (ConcreteClass('builtins', 'int'), ConcreteClass('builtins', 'str'))))
+
+In [6]: retval[0]
+Out[6]: True
+
+In [7]: list(retval[1].successors(t1))
+Out[7]:
 [ConcreteClass(module_name='builtins', class_name='int'),
  (ConcreteClass(module_name='builtins', class_name='int'),
   ConcreteClass(module_name='builtins', class_name='NoneType'))]
 
-In [42]: list(retval[1].successors(t2))
-Out[42]: 
-[ConcreteClass(module_name='builtins', class_name='str'),
- (ConcreteClass(module_name='builtins', class_name='str'),
-  ConcreteClass(module_name='builtins', class_name='NoneType'))]
-  
-------
-
-retval = type_annotation_subtyping(Subscription(ConcreteClass('builtins', 'dict'), (t1, ConcreteClass('builtins', 'int'))), Subscription(ConcreteClass('builtins', 'dict'), (ConcreteClass('builtins', 'int'),ConcreteClass('builtins', 'str'))))
-
-In [44]: retval[0]
-Out[44]: False
-
-In [45]: retval[1].edges
-Out[45]: OutEdgeView([])
-
-------
-
-retval = type_annotation_subtyping(Subscription(ConcreteClass('builtins', 'dict'), (t1, ConcreteClass('builtins', 'int'))), Subscription(ConcreteClass('builtins', 'dict'), (ConcreteClass('builtins', 'str'), t2)))
-
-In [47]: retval[0]
-Out[47]: True
-
-In [48]: list(retval[1].successors(t1))
-Out[48]: 
+In [8]: list(retval[1].successors(t2))
+Out[8]:
 [ConcreteClass(module_name='builtins', class_name='str'),
  (ConcreteClass(module_name='builtins', class_name='str'),
   ConcreteClass(module_name='builtins', class_name='NoneType'))]
 
-In [49]: list(retval[1].predecessors(t2))
-Out[49]: 
+In [9]: retval = type_annotation_subtyping(Subscription(ConcreteClass('builtins', 'dict'), (t1, ConcreteClass('builtins', 'int'))), Subscription(ConcreteClass('builtins', 'dict'), (ConcreteClass('builtins', 'int'),ConcreteClass('builtins', 'str'))))
+
+In [10]: retval[0]
+Out[10]: False
+
+In [11]: retval[1].edges
+Out[11]: OutEdgeView([])
+
+In [12]: retval = type_annotation_subtyping(Subscription(ConcreteClass('builtins', 'dict'), (t1, ConcreteClass('builtins', 'int'))), Subscription(ConcreteClass('builtins', 'dict'), (ConcreteClass('builtins', 'str'), t2)))
+
+In [13]: retval[0]
+Out[13]: True
+
+In [14]: list(retval[1].successors(t1))
+Out[14]:
+[ConcreteClass(module_name='builtins', class_name='str'),
+ (ConcreteClass(module_name='builtins', class_name='str'),
+  ConcreteClass(module_name='builtins', class_name='NoneType'))]
+
+In [15]: list(retval[1].predecessors(t2))
+Out[15]:
 [ConcreteClass(module_name='builtins', class_name='int'),
  ConcreteClass(module_name='builtins', class_name='NoneType')]
- 
-------
 
-retval = type_annotation_subtyping(ConcreteClass('builtins', 'bytearray'), Subscription(ConcreteClass('typing', 'Iterable'), (t1,)))
+In [16]: retval = type_annotation_subtyping(ConcreteClass('builtins', 'bytearray'), Subscription(ConcreteClass('typing', 'Iterable'), (t1,)))
 
-In [36]: retval[0]
-Out[36]: True
+In [17]: retval[0]
+Out[17]: True
 
-In [38]: list(retval[1].predecessors(t1))
-Out[38]: [ConcreteClass(module_name='builtins', class_name='int')]
+In [18]: list(retval[1].predecessors(t1))
+Out[18]: [ConcreteClass(module_name='builtins', class_name='int')]
+```
 """
 
 import importlib
@@ -467,7 +464,7 @@ def type_annotation_subtyping(
         return result, type_variable_subtyping_digraph
 
 
-def find_lowest_subtype_of_type_annotations(type_annotation_list):
+def find_lowest_subtype_of_type_annotations_or_none(type_annotation_list):
     if len(type_annotation_list) == 0:
         subtype = None
     elif len(type_annotation_list) == 1:
@@ -479,4 +476,3 @@ def find_lowest_subtype_of_type_annotations(type_annotation_list):
                 subtype = type_annotation
     
     return subtype
-
